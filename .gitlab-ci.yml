@@ -1,0 +1,48 @@
+# Deploy Good Feel → GitLab Pages (custom domain: goodfeel.info.vn)
+# Pages URL: https://<namespace>.gitlab.io/<project>/
+# Custom domain: Settings → Pages → New domain → goodfeel.info.vn
+
+stages:
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: "20"
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+
+build-goodfeel:
+  stage: build
+  image: node:${NODE_VERSION}
+  script:
+    - npm ci
+    - npm run build -- goodfeel
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - dist/goodfeel/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "web"
+
+pages:
+  stage: deploy
+  image: alpine:latest
+  needs:
+    - build-goodfeel
+  script:
+    - mkdir -p public
+    - cp -a dist/goodfeel/. public/
+    - touch public/.nojekyll
+    - echo "goodfeel.info.vn" > public/CNAME
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "web"
