@@ -1,0 +1,205 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getSite } from '../config/site'
+
+const site = getSite()
+const siteUrl = site.origin
+const breadcrumbs = [
+  { name: 'Trang chủ', url: siteUrl + '/' },
+  { name: 'Tìm kiếm', url: siteUrl + '/tim-kiem' },
+]
+---
+
+<BaseLayout
+  title="Tìm kiếm bài viết"
+  description={`Tìm kiếm bài viết trên ${site.name}. ${site.description}`}
+  canonical={siteUrl + '/tim-kiem'}
+  noindex={true}
+  breadcrumbs={breadcrumbs}
+>
+  <div class="container">
+    <div class="prose">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol class="breadcrumb__list">
+          {breadcrumbs.map((crumb, i) => (
+            <li class={`breadcrumb__item${i === breadcrumbs.length - 1 ? ' breadcrumb__item--current' : ''}`}>
+              {i < breadcrumbs.length - 1
+                ? <><a href={crumb.url}>{crumb.name}</a><span class="breadcrumb__item--sep" aria-hidden="true">›</span></>
+                : <span>{crumb.name}</span>
+              }
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <div class="search-page">
+        <h1 class="search-page__title">Tìm kiếm bài viết</h1>
+
+        <div class="search-page__bar">
+          <input
+            id="search-input"
+            type="search"
+            placeholder="Nhập từ khóa..."
+            autocomplete="off"
+            aria-label="Tìm kiếm bài viết"
+            class="search-page__input"
+          />
+        </div>
+
+        <p id="search-status" class="search-page__status" aria-live="polite"></p>
+
+        <ul id="search-results" class="search-page__results" role="list"></ul>
+      </div>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.search-page { padding: 2rem 0; }
+.search-page__title {
+  font-size: var(--size-2xl);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  margin-bottom: 1.5rem;
+}
+.search-page__bar { margin-bottom: 1rem; }
+.search-page__input {
+  width: 100%;
+  padding: .75rem 1rem;
+  font-family: var(--font-ui);
+  font-size: var(--size-base);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color .15s;
+}
+.search-page__input:focus { border-color: var(--color-accent); }
+.search-page__status {
+  font-family: var(--font-ui);
+  font-size: var(--size-sm);
+  color: var(--color-muted);
+  margin-bottom: 1rem;
+  min-height: 1.4em;
+}
+.search-page__results { list-style: none; padding: 0; margin: 0; }
+.search-result {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.search-result:last-child { border-bottom: none; }
+.search-result__title {
+  font-size: var(--size-lg);
+  font-weight: 600;
+  margin-bottom: .35rem;
+  line-height: var(--line-tight);
+}
+.search-result__title a { color: var(--color-text); text-decoration: none; }
+.search-result__title a:hover { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; opacity: 1; }
+.search-result__excerpt {
+  font-size: var(--size-sm);
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin-bottom: .4rem;
+}
+.search-result__meta {
+  font-family: var(--font-ui);
+  font-size: var(--size-xs);
+  color: var(--color-muted);
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search-result__tag {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  padding: .1em .5em;
+  border-radius: 2rem;
+}
+mark {
+  background: #e8e8e8;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 .1em;
+}
+</style>
+
+<script>
+let allPosts = []
+
+async function loadIndex() {
+  const res = await fetch('/search-index.json')
+  allPosts = await res.json()
+}
+
+function highlight(text, query) {
+  if (!query) return text
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>')
+}
+
+function search(query) {
+  const q = query.trim().toLowerCase()
+  if (!q) return []
+  return allPosts.filter(p =>
+    p.title.toLowerCase().includes(q) ||
+    p.excerpt.toLowerCase().includes(q) ||
+    (p.tags || []).some(t => t.toLowerCase().includes(q))
+  )
+}
+
+function renderResults(results, query) {
+  const list = document.getElementById('search-results')
+  const status = document.getElementById('search-status')
+
+  if (!query.trim()) {
+    list.innerHTML = ''
+    status.textContent = ''
+    return
+  }
+
+  status.textContent = results.length
+    ? `Tìm thấy ${results.length} bài viết`
+    : 'Không tìm thấy bài viết nào.'
+
+  list.innerHTML = results.map(p => `
+    <li class="search-result">
+      <div class="search-result__title">
+        <a href="/${p.slug}">${highlight(p.title, query)}</a>
+      </div>
+      ${p.excerpt ? `<p class="search-result__excerpt">${highlight(p.excerpt.slice(0, 120) + '...', query)}</p>` : ''}
+      <div class="search-result__meta">
+        <span>${new Date(p.date).toLocaleDateString('vi-VN')}</span>
+        ${(p.tags || []).slice(0, 3).map(t => `<span class="search-result__tag">${t}</span>`).join('')}
+      </div>
+    </li>
+  `).join('')
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadIndex()
+
+  const input = document.getElementById('search-input')
+
+  // Pre-fill from URL ?q=
+  const params = new URLSearchParams(window.location.search)
+  const q = params.get('q') || ''
+  if (q) { input.value = q; renderResults(search(q), q) }
+
+  let timer
+  input.addEventListener('input', e => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      const val = e.target.value
+      renderResults(search(val), val)
+      const url = new URL(window.location)
+      val ? url.searchParams.set('q', val) : url.searchParams.delete('q')
+      window.history.replaceState({}, '', url)
+    }, 200)
+  })
+})
+</script>

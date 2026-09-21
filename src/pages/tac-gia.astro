@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getSite } from '../config/site'
+import { getPublishedPosts } from '../lib/posts'
+
+const site = getSite()
+const sorted = await getPublishedPosts()
+
+const siteUrl = site.origin
+const pageUrl = siteUrl + '/tac-gia'
+
+const breadcrumbs = [
+  { name: 'Trang chủ', url: siteUrl + '/' },
+  { name: 'Tác giả', url: pageUrl },
+]
+---
+
+<BaseLayout
+  title="Tác giả"
+  description={`${site.author.name} — ${site.author.role}. ${site.description}`}
+  canonical={pageUrl}
+  breadcrumbs={breadcrumbs}
+>
+  <div class="container">
+    <div class="prose">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol class="breadcrumb__list">
+          {breadcrumbs.map((crumb, i) => (
+            <li class={`breadcrumb__item${i === breadcrumbs.length - 1 ? ' breadcrumb__item--current' : ''}`}>
+              {i < breadcrumbs.length - 1
+                ? <><a href={crumb.url}>{crumb.name}</a><span class="breadcrumb__item--sep" aria-hidden="true">›</span></>
+                : <span>{crumb.name}</span>
+              }
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <div class="author-page__bio">
+        <div class="author-page__avatar" aria-hidden="true">{site.author.initials}</div>
+        <div class="author-page__info">
+          <h1 class="author-page__name">{site.author.name}</h1>
+          <p class="author-page__role">{site.author.role}</p>
+          <p class="author-page__desc">{site.description}</p>
+        </div>
+      </div>
+
+      <div class="author-page__posts">
+        <h2 class="author-page__posts-title">Tất cả bài viết ({sorted.length})</h2>
+        {sorted.length === 0 ? (
+          <p style="color: var(--color-muted); font-family: var(--font-ui); padding: 1rem 0 3rem;">
+            Chưa có bài viết nào.
+          </p>
+        ) : (
+          <ul class="author-page__post-list">
+            {sorted.map(post => (
+              <li class="author-page__post-item">
+                <a href={`/${post.publicSlug}/`} class="author-page__post-link">{post.data.title}</a>
+                <span class="author-page__post-date">
+                  {new Date(post.data.date).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.author-page__bio {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin: 2.5rem 0 3rem;
+  padding: 1.75rem;
+  background: var(--color-accent-light);
+  border-radius: 10px;
+}
+.author-page__avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.author-page__info { flex: 1; }
+.author-page__name {
+  font-size: var(--size-2xl);
+  font-weight: 700;
+  margin-bottom: .25rem;
+  letter-spacing: -.02em;
+}
+.author-page__role {
+  font-family: var(--font-ui);
+  font-size: var(--size-sm);
+  color: var(--color-muted);
+  margin-bottom: .75rem;
+}
+.author-page__desc {
+  font-size: var(--size-sm);
+  color: var(--color-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+.author-page__posts-title {
+  font-size: var(--size-lg);
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  letter-spacing: -.02em;
+}
+.author-page__post-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.author-page__post-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: .75rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.author-page__post-item:last-child { border-bottom: none; }
+.author-page__post-link {
+  font-size: var(--size-base);
+  color: var(--color-text);
+  text-decoration: none;
+  flex: 1;
+  line-height: 1.4;
+}
+.author-page__post-link:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 1;
+}
+.author-page__post-date {
+  font-family: var(--font-ui);
+  font-size: var(--size-xs);
+  color: var(--color-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .author-page__bio { flex-direction: column; gap: 1rem; }
+  .author-page__post-item { flex-direction: column; gap: .25rem; }
+}
+</style>

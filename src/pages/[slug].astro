@@ -1,0 +1,52 @@
+---
+import { getPublishedPosts } from '../lib/posts'
+import PostLayout from '../layouts/PostLayout.astro'
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts()
+  return posts.map(post => ({
+    params: { slug: post.publicSlug },
+    props: { post, allPosts: posts }
+  }))
+}
+
+const { post, allPosts } = Astro.props
+const { Content } = await post.render()
+
+const wordCount = post.body.trim().split(/\s+/).length
+const readingTime = Math.max(1, Math.ceil(wordCount / 200))
+
+const related = allPosts
+  .filter(p => p.publicSlug !== post.publicSlug)
+  .map(p => ({
+    ...p,
+    sharedTags: p.data.tags.filter(t => post.data.tags.includes(t)).length
+  }))
+  .filter(p => p.sharedTags > 0)
+  .sort((a, b) => {
+    if (b.sharedTags !== a.sharedTags) return b.sharedTags - a.sharedTags
+    return new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  })
+  .slice(0, 6)
+  .map(({ publicSlug, data }) => ({
+    slug: publicSlug,
+    title: data.title,
+    excerpt: data.excerpt,
+    tags: data.tags,
+    date: data.date,
+  }))
+---
+<PostLayout
+  title={post.data.title}
+  date={post.data.date}
+  tags={post.data.tags}
+  excerpt={post.data.excerpt}
+  cover={post.data.cover}
+  updatedAt={post.data.updatedAt}
+  seoTitle={post.data.seoTitle}
+  seoDesc={post.data.seoDesc}
+  readingTime={readingTime}
+  relatedPosts={related}
+>
+  <Content />
+</PostLayout>

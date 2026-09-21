@@ -1,0 +1,98 @@
+---
+import { getSite } from '../config/site'
+
+const site = getSite()
+const AUTHOR = {
+  name:   site.author.name,
+  title:  site.author.role,
+  bio:    site.author.bioHtml,
+  avatar: '/images/avatar.jpg',
+}
+---
+
+<aside class="author-bio" aria-label="Thông tin tác giả">
+  <div class="author-bio__inner">
+    {AUTHOR.avatar && (
+      <div class="author-bio__avatar">
+        <img src={AUTHOR.avatar} alt={`Ảnh ${AUTHOR.name}`} width="64" height="64" loading="lazy" />
+      </div>
+    )}
+    <div class="author-bio__content">
+      <p class="author-bio__label">Tác giả</p>
+      <a href="/tac-gia" class="author-bio__name">{AUTHOR.name}</a>
+      {AUTHOR.title && <p class="author-bio__title">{AUTHOR.title}</p>}
+      <p class="author-bio__text" set:html={AUTHOR.bio} />
+    </div>
+  </div>
+</aside>
+
+<style>
+.author-bio {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  background: var(--color-accent-light);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-accent);
+}
+
+.author-bio__inner {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.author-bio__avatar {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.author-bio__avatar img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.author-bio__label {
+  font-family: var(--font-ui);
+  font-size: var(--size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--color-accent);
+  margin-bottom: .25rem;
+}
+
+.author-bio__name {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--size-md);
+  color: var(--color-text);
+  margin-bottom: .15rem;
+  text-decoration: none;
+  display: inline-block;
+}
+.author-bio__name:hover { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; opacity: 1; }
+
+.author-bio__title {
+  font-family: var(--font-ui);
+  font-size: var(--size-sm);
+  color: var(--color-muted);
+  margin-bottom: .5rem;
+}
+
+.author-bio__text {
+  font-size: var(--size-sm);
+  color: var(--color-muted);
+  line-height: 1.65;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .author-bio__inner { flex-direction: column; gap: .75rem; }
+}
+</style>

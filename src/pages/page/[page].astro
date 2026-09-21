@@ -1,0 +1,86 @@
+---
+import { getSite } from '../../config/site'
+import { getPublishedPosts } from '../../lib/posts'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import PostCard from '../../components/PostCard.astro'
+
+const PAGE_SIZE = 10
+const site = getSite()
+
+export async function getStaticPaths() {
+  const PAGE_SIZE = 10
+  const sorted = await getPublishedPosts()
+  const totalPages = Math.ceil(sorted.length / PAGE_SIZE)
+  if (totalPages < 2) return []
+
+  return Array.from({ length: totalPages - 1 }, (_, i) => {
+    const page = i + 2
+    return {
+      params: { page: String(page) },
+      props: {
+        posts: sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+        currentPage: page,
+        totalPages,
+      }
+    }
+  })
+}
+
+const { posts, currentPage, totalPages } = Astro.props
+---
+<BaseLayout
+  title={`${site.name} — Trang ${currentPage}`}
+  description={`${site.description} Trang ${currentPage} / ${totalPages}.`}
+  noindex={false}
+>
+  <div class="container">
+    <div class="prose">
+
+      <section class="home-hero">
+        <p class="home-hero__label">{site.tagline}</p>
+        <h1 class="home-hero__title">{site.name}</h1>
+        <p class="home-hero__page-info">Trang {currentPage} / {totalPages}</p>
+      </section>
+
+      <section>
+        {posts.map(post => (
+          <PostCard
+            title={post.data.title}
+            slug={post.publicSlug}
+            date={post.data.date}
+            tags={post.data.tags}
+            excerpt={post.data.excerpt}
+            cover={post.data.cover}
+          />
+        ))}
+      </section>
+
+      <nav class="pagination" aria-label="Phân trang">
+        {currentPage > 1 && (
+          <a href={currentPage === 2 ? '/' : `/page/${currentPage - 1}/`} class="pagination__item pagination__item--prev">← Trang trước</a>
+        )}
+
+        {currentPage > 2 && <a href="/" class="pagination__item">1</a>}
+        {currentPage > 3 && <span class="pagination__item pagination__item--dots">…</span>}
+
+        {currentPage > 1 && (
+          <a href={currentPage === 2 ? '/' : `/page/${currentPage - 1}/`} class="pagination__item">{currentPage - 1}</a>
+        )}
+        <span class="pagination__item pagination__item--active">{currentPage}</span>
+        {currentPage < totalPages && (
+          <a href={`/page/${currentPage + 1}/`} class="pagination__item">{currentPage + 1}</a>
+        )}
+
+        {currentPage < totalPages - 2 && <span class="pagination__item pagination__item--dots">…</span>}
+        {currentPage < totalPages - 1 && (
+          <a href={`/page/${totalPages}/`} class="pagination__item">{totalPages}</a>
+        )}
+
+        {currentPage < totalPages && (
+          <a href={`/page/${currentPage + 1}/`} class="pagination__item pagination__item--next">Trang sau →</a>
+        )}
+      </nav>
+
+    </div>
+  </div>
+</BaseLayout>

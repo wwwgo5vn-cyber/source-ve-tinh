@@ -1,0 +1,81 @@
+---
+import { getSite } from '../config/site'
+import { getPublishedPosts } from '../lib/posts'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PostCard from '../components/PostCard.astro'
+
+const PAGE_SIZE = 10
+const site = getSite()
+const siteUrl = site.origin
+
+const sorted = await getPublishedPosts()
+const totalPages = Math.ceil(sorted.length / PAGE_SIZE)
+const posts = sorted.slice(0, PAGE_SIZE)
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": site.name,
+  "url": siteUrl,
+  "description": site.description,
+  "inLanguage": "vi",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": { "@type": "EntryPoint", "urlTemplate": `${siteUrl}/tim-kiem?q={search_term_string}` },
+    "query-input": "required name=search_term_string"
+  }
+}
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": `Bài viết mới nhất — ${site.name}`,
+  "itemListElement": posts.map((post, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "url": `${siteUrl}/${post.publicSlug}/`,
+    "name": post.data.title
+  }))
+}
+---
+<BaseLayout title={site.name} description={site.description} extraSchema={[websiteSchema, itemListSchema]}>
+  <div class="container">
+    <div class="prose">
+
+      <section class="home-hero">
+        <p class="home-hero__label">{site.tagline}</p>
+        <h1 class="home-hero__title">{site.name}</h1>
+      </section>
+
+      <section>
+        {posts.map(post => (
+          <PostCard
+            title={post.data.title}
+            slug={post.publicSlug}
+            date={post.data.date}
+            tags={post.data.tags}
+            excerpt={post.data.excerpt}
+            cover={post.data.cover}
+          />
+        ))}
+
+        {posts.length === 0 && (
+          <p style="color: var(--color-muted); padding: 3rem 0; font-family: var(--font-ui);">
+            Chưa có bài viết nào. Thêm file .md vào src/content/posts/{site.id}/
+          </p>
+        )}
+      </section>
+
+      {totalPages > 1 && (
+        <nav class="pagination" aria-label="Phân trang">
+          <span class="pagination__item pagination__item--active">1</span>
+          {Array.from({ length: totalPages - 1 }, (_, i) => i + 2).map(page => (
+            <a href={`/page/${page}/`} class="pagination__item">{page}</a>
+          ))}
+          <a href="/page/2/" class="pagination__item pagination__item--next">Trang sau →</a>
+        </nav>
+      )}
+
+    </div>
+  </div>
+</BaseLayout>

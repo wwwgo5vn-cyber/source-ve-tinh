@@ -1,0 +1,6 @@
+---
+interface Props { tag: string }
+const { tag } = Astro.props
+const slug = tag.toLowerCase().replace(/\s+/g, '-')
+---
+<a href={`/tag/${slug}`} class="tag-badge">#{tag}</a>

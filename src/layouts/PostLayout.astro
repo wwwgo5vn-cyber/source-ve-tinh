@@ -1,0 +1,131 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import TagBadge from '../components/TagBadge.astro'
+import AuthorBio from '../components/AuthorBio.astro'
+import ShareButtons from '../components/ShareButtons.astro'
+
+interface RelatedPost {
+  slug: string
+  title: string
+  excerpt: string
+  tags: string[]
+  date: string
+}
+
+interface Props {
+  title: string
+  date: string
+  tags: string[]
+  excerpt: string
+  cover?: string
+  updatedAt?: string
+  seoTitle?: string
+  seoDesc?: string
+  readingTime?: number
+  relatedPosts?: RelatedPost[]
+}
+
+const { title, date, tags, excerpt, cover, updatedAt, seoTitle, seoDesc, readingTime, relatedPosts = [] } = Astro.props
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? ''
+const pageUrl = siteUrl + Astro.url.pathname
+
+const formattedDate = new Date(date).toLocaleDateString('vi-VN', {
+  year: 'numeric', month: 'long', day: 'numeric'
+})
+
+const formattedUpdatedDate = updatedAt
+  ? new Date(updatedAt).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })
+  : null
+
+const breadcrumbs = [
+  { name: 'Trang chủ', url: siteUrl + '/' },
+  { name: seoTitle || title, url: pageUrl },
+]
+---
+<BaseLayout
+  title={seoTitle || title}
+  description={seoDesc || excerpt}
+  ogImage={cover}
+  type="article"
+  publishedAt={date}
+  updatedAt={updatedAt}
+  breadcrumbs={breadcrumbs}
+>
+  <div class="container">
+    <div class="prose">
+
+      <div class="post-header">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol class="breadcrumb__list">
+            <li class="breadcrumb__item"><a href="/">Trang chủ</a></li>
+            <li class="breadcrumb__item breadcrumb__item--sep" aria-hidden="true">›</li>
+            <li class="breadcrumb__item"><span>{seoTitle || title}</span></li>
+          </ol>
+        </nav>
+
+        <div class="post-header__tags">
+          {tags.map(tag => <TagBadge tag={tag} />)}
+        </div>
+
+        <h1 class="post-header__title">{title}</h1>
+
+        <div class="post-header__meta">
+          <time datetime={date}>{formattedDate}</time>
+          {readingTime && (
+            <span class="post-header__reading-time">· đọc ~ {readingTime} phút</span>
+          )}
+          {formattedUpdatedDate && (
+            <span class="post-header__updated">· Cập nhật: <time datetime={updatedAt}>{formattedUpdatedDate}</time></span>
+          )}
+        </div>
+
+        {cover && (
+          <div class="post-header__cover">
+            <img src={cover} alt={title} width="1200" height="630" loading="eager" decoding="async" />
+          </div>
+        )}
+      </div>
+
+      <article class="post-content">
+        <slot />
+      </article>
+
+      <ShareButtons url={pageUrl} title={seoTitle || title} />
+
+      <AuthorBio />
+
+      <div class="post-footer">
+        <p class="post-footer__tags-label">Tags</p>
+        <div class="post-footer__tags">
+          {tags.map(tag => <TagBadge tag={tag} />)}
+        </div>
+      </div>
+
+      {relatedPosts.length > 0 && (
+        <section class="related-posts" aria-labelledby="related-posts-title">
+          <h2 id="related-posts-title" class="related-posts__title">Bài viết liên quan</h2>
+          <div class="related-posts__grid">
+            {relatedPosts.map(p => (
+              <a href={`/${p.slug}/`} class="related-post-card">
+                {p.tags.length > 0 && (
+                  <div class="related-post-card__tags">
+                    {p.tags.slice(0, 2).map(tag => (
+                      <span class="related-post-card__tag">{tag}</span>
+                    ))}
+                  </div>
+                )}
+                <p class="related-post-card__title">{p.title}</p>
+                {p.excerpt && <p class="related-post-card__excerpt">{p.excerpt}</p>}
+                <time class="related-post-card__date" datetime={p.date}>
+                  {new Date(p.date).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </time>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+    </div>
+  </div>
+</BaseLayout>

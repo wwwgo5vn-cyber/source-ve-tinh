@@ -1,0 +1,121 @@
+{
+  "defaultSite": "befine",
+  "brand": {
+    "authorName": "Nguyễn Văn",
+    "authorInitials": "NV",
+    "email": "www.go5.vn@gmail.com",
+    "phone": "+84379712901",
+    "phoneDisplay": "037 971 2901",
+    "zalo": "https://zalo.me/0379712901",
+    "address": "01 Đường 39, Phường An Khánh, Thành phố Thủ Đức, Thành phố Hồ Chí Minh",
+    "parentName": "Go5",
+    "parentUrl": "https://www.go5.vn"
+  },
+  "sites": [
+    {
+      "id": "befine",
+      "domain": "befine.info.vn",
+      "name": "Be Fine",
+      "tagline": "Ổn định nhịp sống mỗi ngày",
+      "description": "Be Fine chia sẻ góc nhìn thực tế về sức khỏe, thói quen tốt và cách giữ cuộc sống ổn định, rõ ràng hơn từng ngày."
+    },
+    {
+      "id": "onemorestep",
+      "domain": "onemorestep.info.vn",
+      "name": "One More Step",
+      "tagline": "Thêm một bước, rõ hơn một chút",
+      "description": "One More Step viết về tiến bộ nhỏ, kỷ luật cá nhân và những bước đi thực tế giúp bạn đi xa hơn mà không cần đốt cháy bản thân."
+    },
+    {
+      "id": "9signal",
+      "domain": "9signal.info.vn",
+      "name": "9 Signal",
+      "tagline": "Tín hiệu rõ, quyết định đúng",
+      "description": "9 Signal tập trung vào cách lọc nhiễu, nhận tín hiệu quan trọng và ra quyết định tỉnh táo trong công việc lẫn cuộc sống."
+    },
+    {
+      "id": "goodfeel",
+      "domain": "goodfeel.info.vn",
+      "name": "Good Feel",
+      "tagline": "Cảm giác tốt bắt đầu từ việc nhỏ",
+      "description": "Good Feel chia sẻ những thói quen, góc nhìn và lựa chọn đời thường giúp tinh thần nhẹ hơn, cảm xúc ổn hơn."
+    },
+    {
+      "id": "thewayofspirit",
+      "domain": "thewayofspirit.info.vn",
+      "name": "The Way of Spirit",
+      "tagline": "Lối đi inward, sống có chiều sâu",
+      "description": "The Way of Spirit viết về nội tâm, chánh niệm và hành trình sống chậm để hiểu mình rõ hơn."
+    },
+    {
+      "id": "9seed",
+      "domain": "9seed.info.vn",
+      "name": "9 Seed",
+      "tagline": "Gieo hạt nhỏ, chờ mùa lớn",
+      "description": "9 Seed nói về khởi đầu, kiên trì và cách chăm những ý tưởng nhỏ thành thói quen, dự án và kết quả bền."
+    },
+    {
+      "id": "truereason",
+      "domain": "truereason.info.vn",
+      "name": "True Reason",
+      "tagline": "Lý do thật, hành động thật",
+      "description": "True Reason mổ xẻ lý do đằng sau lựa chọn, giúp bạn nghĩ rõ hơn trước khi làm và làm đúng hơn sau khi nghĩ."
+    },
+    {
+      "id": "naturespirit",
+      "domain": "naturespirit.info.vn",
+      "name": "Nature Spirit",
+      "tagline": "Gần thiên nhiên, gần chính mình",
+      "description": "Nature Spirit chia sẻ nhịp sống xanh, kết nối với thiên nhiên và cách lấy lại năng lượng từ những điều mộc mạc."
+    },
+    {
+      "id": "calmlife",
+      "domain": "calmlife.info.vn",
+      "name": "Calm Life",
+      "tagline": "Sống chậm, sống đủ, sống êm",
+      "description": "Calm Life hướng tới nhịp sống tĩnh, giảm ồn ào và xây thói quen giúp đầu óc thoáng, cơ thể khỏe."
+    },
+    {
+      "id": "sweetchoice",
+      "domain": "sweetchoice.info.vn",
+      "name": "Sweet Choice",
+      "tagline": "Lựa chọn vừa miệng, vừa với mình",
+      "description": "Sweet Choice viết về những lựa chọn đời thường — ăn uống, lối sống, thói quen — sao cho vừa sức và bền lâu."
+    },
+    {
+      "id": "lovesomething",
+      "domain": "lovesomething.info.vn",
+      "name": "Love Something",
+      "tagline": "Yêu một điều, làm cho tử tế",
+      "description": "Love Something kể về đam mê nhỏ, sự chăm chút và cách yêu một việc đủ lâu để nó trở thành năng lượng sống."
+    },
+    {
+      "id": "onefinething",
+      "domain": "onefinething.info.vn",
+      "name": "One Fine Thing",
+      "tagline": "Một điều tử tế mỗi ngày",
+      "description": "One Fine Thing tập trung vào những điều nhỏ làm nên ngày đẹp: một thói quen, một góc nhìn, một việc làm đúng."
+    },
+    {
+      "id": "intimatefriend",
+      "domain": "intimatefriend.info.vn",
+      "name": "Intimate Friend",
+      "tagline": "Gần người, hiểu mình",
+      "description": "Intimate Friend viết về tình bạn, sự gắn kết và cách xây mối quan hệ chân thật trong đời sống hiện đại."
+    },
+    {
+      "id": "willbefine",
+      "domain": "willbefine.info.vn",
+      "name": "Will Be Fine",
+      "tagline": "Sẽ ổn — nếu đi tiếp",
+      "description": "Will Be Fine đồng hành những giai đoạn khó, giúp bạn đứng dậy bằng bước nhỏ, lý trí và sự dịu dàng với chính mình."
+    },
+    {
+      "id": "gooncloud",
+      "domain": "gooncloud.info.vn",
+      "name": "Go On Cloud",
+      "tagline": "Nhẹ đầu, đi tiếp phía trước",
+      "description": "Go On Cloud chia sẻ cách giảm nặng trong đầu, sắp xếp suy nghĩ và giữ hướng đi khi cuộc sống nhiều tầng nhiễu."
+    }
+  ]
+}

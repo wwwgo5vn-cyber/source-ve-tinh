@@ -1,0 +1,26 @@
+{
+  "name": "source-ve-tinh",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "node scripts/run-site.mjs dev",
+    "dev:site": "node scripts/run-site.mjs dev",
+    "build": "node scripts/run-site.mjs build",
+    "build:site": "node scripts/run-site.mjs build",
+    "build:all": "node scripts/build-all.mjs",
+    "preview": "node scripts/run-site.mjs preview",
+    "import": "node scripts/import-posts.mjs",
+    "import:all": "node scripts/import-all.mjs",
+    "import:dry": "node scripts/import-posts.mjs --dry-run",
+    "import:force": "node scripts/import-posts.mjs --force",
+    "check-images": "node scripts/check-images.mjs",
+    "assets:init": "node scripts/check-images.mjs --init"
+  },
+  "dependencies": {
+    "@astrojs/compiler": "^4.0.0",
+    "@astrojs/mdx": "^2.0.0",
+    "@fontsource/roboto": "^5.2.10",
+    "astro": "^4.0.0",
+    "unist-util-visit": "^5.1.0"
+  }
+}

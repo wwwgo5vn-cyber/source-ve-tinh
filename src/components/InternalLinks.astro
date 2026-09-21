@@ -1,0 +1,25 @@
+---
+interface RelatedPost {
+  slug: string
+  title: string
+}
+
+interface Props {
+  posts: RelatedPost[]
+}
+
+const { posts } = Astro.props
+---
+
+{posts && posts.length > 0 && (
+  <div class="internal-links">
+    <p>Bài viết liên quan</p>
+    <ul>
+      {posts.map(p => (
+        <li>
+          <a href={`/${p.slug}/`}>{p.title}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}

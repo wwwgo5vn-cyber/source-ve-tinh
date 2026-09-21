@@ -1,0 +1,52 @@
+---
+import { getPublishedPosts } from '../../lib/posts'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import PostCard from '../../components/PostCard.astro'
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts()
+
+  const tagSet = new Set<string>()
+  posts.forEach(post => post.data.tags.forEach(t => tagSet.add(t)))
+
+  return Array.from(tagSet).map(tag => {
+    const slug = tag.toLowerCase().replace(/\s+/g, '-')
+    const filtered = posts.filter(p => p.data.tags.includes(tag))
+
+    return { params: { tag: slug }, props: { tagName: tag, posts: filtered } }
+  })
+}
+
+const { tagName, posts } = Astro.props
+---
+<BaseLayout
+  title={`Bài viết về #${tagName}`}
+  description={`Tất cả bài viết được gắn tag #${tagName}`}
+>
+  <div class="container">
+    <div class="prose">
+
+      <div class="tag-page-header">
+        <p class="tag-page-header__label">Tag · {posts.length} bài</p>
+        <h1 class="tag-page-header__title">#{tagName}</h1>
+      </div>
+
+      <section>
+        {posts.map(post => (
+          <PostCard
+            title={post.data.title}
+            slug={post.publicSlug}
+            date={post.data.date}
+            tags={post.data.tags}
+            excerpt={post.data.excerpt}
+          />
+        ))}
+      </section>
+
+      <div style="margin-top: 2rem;">
+        <a href="/tag" class="back-link">← Xem tất cả tags</a>
+      </div>
+
+    </div>
+  </div>
+</BaseLayout>

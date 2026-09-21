@@ -1,0 +1,20 @@
+Options -Indexes
+
+RewriteEngine On
+
+# Trang 404 tùy chỉnh (Astro xuất ra /404.html)
+ErrorDocument 404 /404.html
+
+# Gộp nhiều dấu / liên tiếp (vd: /slug// → /slug/)
+RewriteCond %{REQUEST_URI} ^(.*)//+(.*)$
+RewriteRule . %1/%2 [R=301,L]
+
+# 301 redirect: /blog/slug/ → /slug/
+RewriteRule ^blog/(.+)$ /$1/ [R=301,L]
+
+# Chỉ thêm trailing slash khi URI chưa kết thúc bằng /
+# Folder không tồn tại → Apache trả ErrorDocument 404, không redirect tiếp
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !/$
+RewriteRule ^(.*)$ /$1/ [R=301,L]

@@ -1,0 +1,47 @@
+---
+import { getPublishedPosts } from '../../lib/posts'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import TagBadge from '../../components/TagBadge.astro'
+
+const posts = await getPublishedPosts()
+
+const tagCount: Record<string, number> = {}
+posts.forEach(post => {
+  post.data.tags.forEach(tag => {
+    tagCount[tag] = (tagCount[tag] || 0) + 1
+  })
+})
+
+const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1])
+---
+<BaseLayout
+  title="Tất cả Tags"
+  description="Duyệt bài viết theo chủ đề"
+>
+  <div class="container">
+    <div class="prose">
+
+      <div class="tag-page-header">
+        <p class="tag-page-header__label">Phân loại</p>
+        <h1 class="tag-page-header__title">Tất cả Tags</h1>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: .75rem; padding: 2rem 0;">
+        {tags.length === 0 && (
+          <p style="color: var(--color-muted); font-family: var(--font-ui);">
+            Chưa có tag nào. Tag sẽ xuất hiện khi có bài viết.
+          </p>
+        )}
+        {tags.map(([tag, count]) => (
+          <span style="display: flex; align-items: center; gap: .4rem;">
+            <TagBadge tag={tag} />
+            <span style="font-family: var(--font-ui); font-size: var(--size-xs); color: var(--color-muted);">
+              {count}
+            </span>
+          </span>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</BaseLayout>
