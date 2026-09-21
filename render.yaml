@@ -1,0 +1,20 @@
+# Intimate Friend — Render Static Site (free CDN)
+# Domain: intimatefriend.info.vn
+# Dashboard: New → Blueprint → chọn repo này (hoặc New → Static Site)
+
+services:
+  - type: web
+    name: intimatefriend
+    runtime: static
+    branch: main
+    buildCommand: npm ci && npm run build -- intimatefriend
+    staticPublishPath: dist/intimatefriend
+    domains:
+      - intimatefriend.info.vn
+    headers:
+      - path: /_astro/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /images/*
+        name: Cache-Control
+        value: public, max-age=604800
